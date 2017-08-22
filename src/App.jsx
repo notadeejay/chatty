@@ -18,22 +18,20 @@ handleSubmit (username, content) {
       content: content
     };
     this.socket.send(JSON.stringify(newMessage))  
-
+    this.setState({
+      currentUser: {name: username}
+    });
+      console.log (this.state)
 }
 
 
-// updateMessages(newMsg) {
-//   const changedMessages = this.state.messages.concat(newMsg);
-//   this.setState({ messages: changedMessages  })
-// }
-
-   
 componentDidMount() {
   this.socket = new WebSocket('ws://localhost:3001/')
   this.socket.onopen = (event) => {
   }
 
   this.socket.onmessage = (event) => {
+    console.log(event);
     const newMessage = JSON.parse(event.data); 
       const newMessages = this.state.messages.concat(newMessage);
           this.setState({
@@ -53,7 +51,7 @@ componentDidMount() {
           </span>
         </nav>
         <MessageList messages = {this.state.messages}/>
-        <ChatBar handleSubmit={this.handleSubmit.bind(this)} />        
+        <ChatBar handleSubmit={this.handleSubmit.bind(this)} currentUser = {this.state.currentUser}/>        
       </div>
       
     );
