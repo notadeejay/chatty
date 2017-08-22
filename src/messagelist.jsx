@@ -6,8 +6,12 @@ class MessageList extends Component {
   render() {
     return (
       <main className="messages">
-       {this.props.messages.map((message, index) => {
-            return <Message message={message} key={index} />;
+       {this.props.messages.map((message) => {
+         if (message.type === 'postNotification') {
+              return <Notification notification={message.content} key={message.id}/>;
+            } else {
+              return <Message content={message.content} username={message.username} key={message.id}/>;
+            }
           })
         }
       </main>

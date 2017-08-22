@@ -29,22 +29,36 @@ wss.broadcast = function broadcast(data) {
   });
 };
 
-
-
 wss.on('connection', (ws) => {
   console.log('Client connected');
 
   ws.on('message', function incoming(message) {
    let msg = JSON.parse(message)
-
-   let msgObj = {
-     type: "message",
-     id: uuidv1(),
-     username: msg.username,
-     content: msg.content
+     
+   switch(msg.type) {
+    case 'postMessage':
+    const newMessage = {
+      id: uuidv1(),
+      type: 'incomingMessage',
+      username: msg.username,
+      content: msg.content
+    };
+    wss.broadcast(JSON.stringify(newMessage));
+      break;
+    case 'postNotification':
+    console.log(msg)
+    const newNotif = {
+      id: uuidv1(),
+      type: 'incomingNotification',
+      username: msg.username,
+      content: msg.content
+    };
+    wss.broadcast(JSON.stringify(newNotif));
+      break;
+      default:
+      // show an error in the console if the message type is unknown
+      throw new Error("Unknown event type " + msg.type);
    }
-
-   wss.broadcast(JSON.stringify(msgObj));
 
   });
    
