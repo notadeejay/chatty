@@ -24,39 +24,73 @@ getRandomColor() {
   return color;
 }
 
-handleSubmit (username, content) {
-  let colour = this.getRandomColor()
-   this.setState({
-      currentUser: {name: username,
-      usercolor: colour}
-    });
+ handleNewMessage (message) {
 
-   const newMessage = {
-      type: 'postMessage',
-      username: username,
-      content: content,
-      usercolor: colour
+    let msg = {
+      type: "postMessage",
+      content: message,
+      username: this.state.currentUser.name,
+      messageColor: this.state.currentUser.color
     };
 
-    this.socket.send(JSON.stringify(newMessage))  
-}
+    this.socket.send(JSON.stringify(msg));
 
-addNewNotification(username, content){
-  event.preventDefault();
-  const newNotif = {
-      type: 'postNotification',
-      content
-    };
-   this.socket.send(JSON.stringify(newNotif));
-   this.setState({
-    currentUser: {name: username}
-    });
-};
+  }
+
+  handeleNewUser(username) {
+
+    if (this.state.currentUser.name !== username) {
+        let notification = {
+          type: 'postNotification',
+          message: '🎉 ' + this.state.currentUser.name + ' has changed username to ' + username
+        };
+        this.socket.send(JSON.stringify(notification));
+        this.setState ({
+          username: this.state.currentUser.name
+      })
+  }
+  }
+
+
+
+
+
+
+
+// handleSubmit (username, content) {
+//   let colour = this.getRandomColor()
+//    this.setState({
+//       currentUser: {name: username,
+//       usercolor: colour}
+//     });
+
+//    const newMessage = {
+//       type: 'postMessage',
+//       username: username,
+//       content: content,
+//       usercolor: colour
+//     };
+
+//     this.socket.send(JSON.stringify(newMessage))  
+// }
+
+// addNewNotification(username, content){
+//   event.preventDefault();
+//   const newNotif = {
+//       type: 'postNotification',
+//       content
+//     };
+//    this.socket.send(JSON.stringify(newNotif));
+//    this.setState({
+//     currentUser: {name: username}
+//     });
+// };
 
 componentDidMount() {
   this.socket = new WebSocket('ws://localhost:3001/')
   this.socket.onopen = (event) => {
   }
+
 
   this.socket.onmessage = (event) => {
     const data = JSON.parse(event.data);  
@@ -84,7 +118,7 @@ componentDidMount() {
       <div>
         <Navbar usercount={this.state.usercount} />
         <MessageList messages={this.state.messages}/>
-        <ChatBar handleSubmit={this.handleSubmit.bind(this)}  notifyUsers={this.addNewNotification.bind(this)} currentUser={this.state.currentUser.name}/>        
+        <ChatBar onSendMessage={this.handleNewMessage.bind(this)}  onSendUser={this.handeleNewUser.bind(this)} currentUser= {this.state.currentUser.name}/>        
       </div>
       
     );
