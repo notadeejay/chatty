@@ -8,21 +8,16 @@ class MessageList extends Component {
     return (
       <main className="messages">
        {this.props.messages.map((message) => {
-         console.log(message.img)
+         //Check if message includes a noficiation
          if (message.type === 'incomingNotification') {
-              return <Notification notification={message.content} 
-              key={message.id} />;
+              return <Notification notification={message.content} key={message.id} />;
             } else {
-              return <Message content={message.content} 
-              username={message.username} 
-              key={message.id} 
-              usercolour={this.props.usercolour} 
-              url={message.img}/>;
+              return <Message content={message.content} username={message.username} 
+              key={message.id} usercolour={this.props.usercolour} url={message.img}/>;
             }
           })
         }
-      </main>
-      
+      </main> 
     );    
   }
 }

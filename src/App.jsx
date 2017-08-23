@@ -15,10 +15,13 @@ class App extends Component {
    }
 }
 
-
-handleSubmit (username, content, img) {
-  const regex = /(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[A-Z0-9+&@#/%=~_|$])/igm
-  const urlArr = (content).match(regex)
+//Handles new message
+  handleSubmit (username, content, img) {
+    //Extract message and image URL 
+    const regex = /(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[A-Z0-9+&@#/%=~_|$])/igm
+    const urlArr = (content).match(regex)
+  
+    //Check if message contains a photo
     if (urlArr) {
       var url = urlArr.toString();
       var result = content.replace(url,"");
@@ -27,63 +30,70 @@ handleSubmit (username, content, img) {
       result = content;
     }
 
-   this.setState({
+    this.setState({
+        currentUser: {name: username}
+      });
+    
+    const newMessage = {
+        type: 'postMessage',
+        username: username,
+        content: result,
+        img: url
+      };
+
+      this.socket.send(JSON.stringify(newMessage))  
+  }
+
+//Handles username update 
+  addNewNotification(username, content){
+    event.preventDefault();
+      const newNotif = {
+        type: 'postNotification',
+        content
+      };
+
+    this.socket.send(JSON.stringify(newNotif));
+    
+    this.setState({
       currentUser: {name: username}
     });
-  
-   const newMessage = {
-      type: 'postMessage',
-      username: username,
-      content: result,
-      img: url
-    };
-    this.socket.send(JSON.stringify(newMessage))  
-}
+  };
 
-addNewNotification(username, content){
-  event.preventDefault();
-  const newNotif = {
-      type: 'postNotification',
-      content
-    };
-   this.socket.send(JSON.stringify(newNotif));
-   this.setState({
-    currentUser: {name: username}
-    });
-};
+  componentDidMount() {
+    this.socket = new WebSocket('ws://localhost:3001/')
+    this.socket.onopen = (event) => {
+    }
 
-componentDidMount() {
-  this.socket = new WebSocket('ws://localhost:3001/')
-  this.socket.onopen = (event) => {
-  }
+    this.socket.onmessage = (event) => {
+      const data = JSON.parse(event.data); 
+      
+      
+      switch(data.type) {
+        case 'incomingMessage':
+        case 'incomingNotification':
+          const newMessages = this.state.messages.concat(data);
+              this.setState({
+                messages: newMessages
+              });
+        break;
+        case 'userCount':
 
-  this.socket.onmessage = (event) => {
-    const data = JSON.parse(event.data); 
-    console.log(data) 
-    switch(data.type) {
-      case 'incomingMessage':
-      case 'incomingNotification':
-        const newMessages = this.state.messages.concat(data);
+          if (this.state.usercolour === '#000000') {
             this.setState({
-              messages: newMessages
-            });
-      break;
-      case 'userCount':
-       if (this.state.usercolour === '#000000') {
-        this.setState({usercolour: data.usercolour,
-          usercount: data.userCount
-        })
-       } else {
-         this.setState({
-          usercount: data.userCount
-        })
-       }
-      break;
-      default:
-        throw new Error("Unknown event type " + data.type);
+              usercolour: data.usercolour,
+              usercount: data.userCount
+            })
+          } else {
+            this.setState({
+              usercount: data.userCount
+            })
+          }
+        break;
+        default:
+          throw new Error("Unknown event type " + data.type);
+      }
     }
   }
-}
      
   render() {
     return (
