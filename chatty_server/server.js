@@ -50,6 +50,7 @@ wss.on('connection', (ws) => {
       type: 'incomingMessage',
       username: msg.username,
       content: msg.content,
+      img: msg.img
     };
     wss.broadcast(JSON.stringify(newMessage));
       break;

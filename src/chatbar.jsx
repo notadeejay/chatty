@@ -20,11 +20,11 @@ class Chatbar extends Component {
         this.props.notifyUsers(this.state.username, content);
       }
       if(event.target.name == "messagebox") {
-        this.props.handleSubmit(this.state.username, this.state.content)
-        this.setState({
-          content: ''
-          })
-      }  
+          this.props.handleSubmit(this.state.username, this.state.content, this.state.img)
+          this.setState({
+            content: '',
+            })
+        }  
    }
   }
 

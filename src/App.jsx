@@ -16,18 +16,21 @@ class App extends Component {
 }
 
 
-handleSubmit (username, content) {
-
+handleSubmit (username, content, img) {
+  const regex = /(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[A-Z0-9+&@#/%=~_|$])/igm
+  const url = (content).match(regex).toString();
+  const result = content.replace(url,"");
+  
    this.setState({
       currentUser: {name: username}
     });
-
+   
    const newMessage = {
       type: 'postMessage',
       username: username,
-      content: content,
+      content: result,
+      img: url
     };
-
     this.socket.send(JSON.stringify(newMessage))  
 }
 
@@ -49,7 +52,8 @@ componentDidMount() {
   }
 
   this.socket.onmessage = (event) => {
-    const data = JSON.parse(event.data);  
+    const data = JSON.parse(event.data); 
+    console.log(data) 
     switch(data.type) {
       case 'incomingMessage':
       case 'incomingNotification':
@@ -59,7 +63,6 @@ componentDidMount() {
             });
       break;
       case 'userCount':
-      console.log(data.usercolour)
        if (this.state.usercolour === '#000000') {
         this.setState({usercolour: data.usercolour,
           usercount: data.userCount
