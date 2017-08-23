@@ -37,6 +37,7 @@ handleSubmit (username, content) {
       content: content,
       usercolor: colour
     };
+    console.log(newMessage)
 
     this.socket.send(JSON.stringify(newMessage))  
 }
@@ -64,6 +65,7 @@ componentDidMount() {
       case 'incomingMessage':
       case 'incomingNotification':
         const newMessages = this.state.messages.concat(data);
+           console.log(data.usercolor)
             this.setState({
               messages: newMessages
             });

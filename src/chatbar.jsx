@@ -22,7 +22,6 @@ class Chatbar extends Component {
       if(event.target.name == "messagebox") {
         this.props.handleSubmit(this.state.username, this.state.content)
         this.setState({
-          username: '',
           content: ''
           })
       }  
