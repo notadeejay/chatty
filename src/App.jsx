@@ -8,36 +8,25 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        currentUser: {name: "Anonymous",
-        usercolor: '#000000'}, // optional. if currentUser is not defined, it means the user is Anonymous
+        currentUser: {name: "Anonymous"},
+        usercolour: '#000000', // optional. if currentUser is not defined, it means the user is Anonymous
         messages: [],
         usercount: ''
    }
 }
 
-getRandomColor() {
-  var letters = '0123456789ABCDEF';
-  var color = '#';
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-}
 
 handleSubmit (username, content) {
-  let colour = this.getRandomColor()
+
    this.setState({
-      currentUser: {name: username,
-      usercolor: colour}
+      currentUser: {name: username}
     });
 
    const newMessage = {
       type: 'postMessage',
       username: username,
       content: content,
-      usercolor: colour
     };
-    console.log(newMessage)
 
     this.socket.send(JSON.stringify(newMessage))  
 }
@@ -65,15 +54,21 @@ componentDidMount() {
       case 'incomingMessage':
       case 'incomingNotification':
         const newMessages = this.state.messages.concat(data);
-           console.log(data.usercolor)
             this.setState({
               messages: newMessages
             });
       break;
       case 'userCount':
-        this.setState({
+      console.log(data.usercolour)
+       if (this.state.usercolour === '#000000') {
+        this.setState({usercolour: data.usercolour,
           usercount: data.userCount
         })
+       } else {
+         this.setState({
+          usercount: data.userCount
+        })
+       }
       break;
       default:
         throw new Error("Unknown event type " + data.type);
@@ -85,7 +80,7 @@ componentDidMount() {
     return (
       <div>
         <Navbar usercount={this.state.usercount} />
-        <MessageList messages={this.state.messages}/>
+        <MessageList messages={this.state.messages} usercolour={this.state.usercolour}/>
         <ChatBar handleSubmit={this.handleSubmit.bind(this)}  notifyUsers={this.addNewNotification.bind(this)} currentUser={this.state.currentUser.name}/>        
       </div>
       
