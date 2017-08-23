@@ -99,7 +99,7 @@ class App extends Component {
     return (
       <div>
         <Navbar usercount={this.state.usercount} />
-        <MessageList messages={this.state.messages} usercolour={this.state.usercolour}/>
+        <MessageList messages={this.state.messages} usercolour={this.state.usercolour} />
         <ChatBar handleSubmit={this.handleSubmit.bind(this)}  notifyUsers={this.addNewNotification.bind(this)} currentUser={this.state.currentUser.name}/>        
       </div>
       
