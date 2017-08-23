@@ -18,15 +18,15 @@ class Chatbar extends Component {
 
       //Check if username has changed
       if(this.state.username !== this.props.currentUser) {
-        let content = '🎉 ' + this.props.currentUser + ' has changed their username to ' + this.state.username
+        let content = '🎉 ' + this.props.currentUser + ' has changed their username to ' + this.state.username;
         this.props.notifyUsers(this.state.username, content);
       }
      
       if(event.target.name == "messagebox") {
-          this.props.handleSubmit(this.state.username, this.state.content, this.state.img)
+          this.props.handleSubmit(this.state.username, this.state.content, this.state.img);
           this.setState({
             content: '',
-            })
+            });
       }  
     }
   }
@@ -34,13 +34,13 @@ class Chatbar extends Component {
   handleUsername (event) {
    this.setState({
         username: event.target.value
-      })
+      });
   }
 
   handleMessage (event) {
      this.setState({
         content: event.target.value
-      })
+      });
   }
 
   render() {
@@ -48,7 +48,7 @@ class Chatbar extends Component {
       <footer className="chatbar">
         <input className="chatbar-username" placeholder='Your name (OPTIONAL)' 
           onChange = {this.handleUsername}
-          onKeyPress={this.handleSubmit.bind(this)}/>
+          onKeyPress={this.handleSubmit.bind(this)} />
         <input className="chatbar-message" placeholder="Type a message and hit ENTER" 
           name="messagebox"
           value={this.state.content}

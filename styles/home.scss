@@ -48,7 +48,7 @@ body {
       font-style: italic;
       padding: 5px 20px;
     }
-
+  
     .message-content,
     .message-username {
       overflow: hidden;
@@ -63,6 +63,12 @@ body {
     .message-username {
       flex: 2;
       font-weight: 700;
+    }
+
+    .message-img {
+      max-width: 60%;
+      float: left;
+      margin-top: 10px;
     }
 
     .navbar {
@@ -95,3 +101,4 @@ body {
       line-height: 4;
       margin-right: 10px;
     }
+  

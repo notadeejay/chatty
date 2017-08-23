@@ -12,14 +12,14 @@ class App extends Component {
         usercolour: '#000000', // optional. if currentUser is not defined, it means the user is Anonymous
         messages: [],
         usercount: ''
-   }
+   };
 }
 
 //Handles new message
   handleSubmit (username, content, img) {
     //Extract message and image URL 
     const regex = /(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[A-Z0-9+&@#/%=~_|$])/igm
-    const urlArr = (content).match(regex)
+    const urlArr = (content).match(regex);
   
     //Check if message contains a photo
     if (urlArr) {
@@ -41,7 +41,7 @@ class App extends Component {
         img: url
       };
 
-      this.socket.send(JSON.stringify(newMessage))  
+      this.socket.send(JSON.stringify(newMessage));  
   }
 
 //Handles username update 
@@ -57,12 +57,12 @@ class App extends Component {
     this.setState({
       currentUser: {name: username}
     });
-  };
+  }
 
   componentDidMount() {
-    this.socket = new WebSocket('ws://localhost:3001/')
+    this.socket = new WebSocket('ws://localhost:3001/');
     this.socket.onopen = (event) => {
-    }
+    };
 
     this.socket.onmessage = (event) => {
       const data = JSON.parse(event.data); 
@@ -82,17 +82,17 @@ class App extends Component {
             this.setState({
               usercolour: data.usercolour,
               usercount: data.userCount
-            })
+            });
           } else {
             this.setState({
               usercount: data.userCount
-            })
+            });
           }
         break;
         default:
           throw new Error("Unknown event type " + data.type);
       }
-    }
+    };
   }
      
   render() {
