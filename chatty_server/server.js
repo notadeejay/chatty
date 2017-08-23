@@ -21,8 +21,6 @@ const wss = new SocketServer({ server });
 
 
 
-
-
 wss.broadcast = function broadcast(data) {
   wss.clients.forEach(function each(client) {
       client.send(data);
@@ -36,22 +34,23 @@ wss.on('connection', (ws) => {
     userCount: userCount,
   }
   wss.broadcast(JSON.stringify(countObj));
+  
+  
 
   ws.on('message', function incoming(message) {
    let msg = JSON.parse(message)
-     
    switch(msg.type) {
     case 'postMessage':
     const newMessage = {
       id: uuidv1(),
       type: 'incomingMessage',
       username: msg.username,
-      content: msg.content
+      content: msg.content,
+      usercolour: msg.usercolour
     };
     wss.broadcast(JSON.stringify(newMessage));
       break;
     case 'postNotification':
-    console.log(msg)
     const newNotif = {
       id: uuidv1(),
       type: 'incomingNotification',

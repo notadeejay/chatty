@@ -8,22 +8,37 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        currentUser: {name: "Anonymous"}, // optional. if currentUser is not defined, it means the user is Anonymous
+        currentUser: {name: "Anonymous",
+        usercolor: '#000000'}, // optional. if currentUser is not defined, it means the user is Anonymous
         messages: [],
         usercount: ''
    }
 }
 
+getRandomColor() {
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
 handleSubmit (username, content) {
+  let colour = this.getRandomColor()
+   this.setState({
+      currentUser: {name: username,
+      usercolor: colour}
+    });
+
    const newMessage = {
       type: 'postMessage',
       username: username,
-      content: content
+      content: content,
+      usercolor: colour
     };
+
     this.socket.send(JSON.stringify(newMessage))  
-    this.setState({
-      currentUser: {name: username}
-    });
 }
 
 addNewNotification(username, content){
@@ -45,7 +60,6 @@ componentDidMount() {
 
   this.socket.onmessage = (event) => {
     const data = JSON.parse(event.data);  
-    
     switch(data.type) {
       case 'incomingMessage':
       case 'incomingNotification':
@@ -53,7 +67,7 @@ componentDidMount() {
             this.setState({
               messages: newMessages
             });
-        break;
+      break;
       case 'userCount':
         this.setState({
           usercount: data.userCount
@@ -70,7 +84,7 @@ componentDidMount() {
       <div>
         <Navbar usercount={this.state.usercount} />
         <MessageList messages={this.state.messages}/>
-        <ChatBar handleSubmit={this.handleSubmit.bind(this)}  notifyUsers={this.addNewNotification.bind(this)} currentUser = {this.state.currentUser.name}/>        
+        <ChatBar handleSubmit={this.handleSubmit.bind(this)}  notifyUsers={this.addNewNotification.bind(this)} currentUser={this.state.currentUser.name}/>        
       </div>
       
     );

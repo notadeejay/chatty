@@ -12,7 +12,7 @@ class Chatbar extends Component {
     this.handleUsername = this.handleUsername.bind(this);
   }
   
-
+  
   handleSubmit(event) {
     if(event.key == 'Enter') {
       if(this.state.username !== this.props.currentUser) {
@@ -21,6 +21,7 @@ class Chatbar extends Component {
       }
       if(event.target.name == "messagebox") {
         this.props.handleSubmit(this.state.username, this.state.content)
+        
         this.setState({
           username: '',
           content: ''
