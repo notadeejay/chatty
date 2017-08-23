@@ -12,7 +12,7 @@ class MessageList extends Component {
          if (message.type === 'incomingNotification') {
               return <Notification notification={message.content} 
               key={message.id} />;
-            } else { (message.img)
+            } else {
               return <Message content={message.content} 
               username={message.username} 
               key={message.id} 

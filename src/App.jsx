@@ -18,13 +18,19 @@ class App extends Component {
 
 handleSubmit (username, content, img) {
   const regex = /(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[A-Z0-9+&@#/%=~_|$])/igm
-  const url = (content).match(regex).toString();
-  const result = content.replace(url,"");
-  
+  const urlArr = (content).match(regex)
+    if (urlArr) {
+      var url = urlArr.toString();
+      var result = content.replace(url,"");
+    } else {
+      url = null;
+      result = content;
+    }
+
    this.setState({
       currentUser: {name: username}
     });
-   
+  
    const newMessage = {
       type: 'postMessage',
       username: username,
