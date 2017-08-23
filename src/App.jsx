@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ChatBar from './ChatBar.jsx';
 import MessageList from './MessageList.jsx';
+import Navbar from './Navbar.jsx';
 
 
 class App extends Component {
@@ -8,8 +9,9 @@ class App extends Component {
     super(props);
     this.state = {
         currentUser: {name: "Anonymous"}, // optional. if currentUser is not defined, it means the user is Anonymous
-        messages: []
-  }
+        messages: [],
+        usercount: ''
+   }
 }
 
 handleSubmit (username, content) {
@@ -43,16 +45,21 @@ componentDidMount() {
 
   this.socket.onmessage = (event) => {
     const data = JSON.parse(event.data);  
+    
     switch(data.type) {
-      case "incomingMessage":
-      case "incomingNotification":
-      const newMessages = this.state.messages.concat(data);
-          this.setState({
-            messages: newMessages
-          });
+      case 'incomingMessage':
+      case 'incomingNotification':
+        const newMessages = this.state.messages.concat(data);
+            this.setState({
+              messages: newMessages
+            });
+        break;
+      case 'userCount':
+        this.setState({
+          usercount: data.userCount
+        })
       break;
       default:
-   
         throw new Error("Unknown event type " + data.type);
     }
   }
@@ -61,11 +68,7 @@ componentDidMount() {
   render() {
     return (
       <div>
-        <nav className="navbar">
-          <a href="/" className="navbar-brand">Chatty</a>
-          <span className='usercount'>
-          </span>
-        </nav>
+        <Navbar usercount={this.state.usercount} />
         <MessageList messages={this.state.messages}/>
         <ChatBar handleSubmit={this.handleSubmit.bind(this)}  notifyUsers={this.addNewNotification.bind(this)} currentUser = {this.state.currentUser.name}/>        
       </div>

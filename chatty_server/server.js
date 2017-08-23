@@ -30,7 +30,12 @@ wss.broadcast = function broadcast(data) {
 };
 
 wss.on('connection', (ws) => {
-  console.log('Client connected');
+  const userCount = wss.clients.size;
+  const countObj = {
+    type: 'userCount',
+    userCount: userCount,
+  }
+  wss.broadcast(JSON.stringify(countObj));
 
   ws.on('message', function incoming(message) {
    let msg = JSON.parse(message)
