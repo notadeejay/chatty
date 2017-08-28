@@ -29,6 +29,13 @@ wss.broadcast = function broadcast(data) {
   });
 };
 
+
+
+
+
+
+
+
 wss.on('connection', (ws) => {
   const userCount = wss.clients.size;
   const color = randomColor();
@@ -37,6 +44,7 @@ wss.on('connection', (ws) => {
     userCount: userCount,
     usercolour: color.hexString()
   }
+
   wss.broadcast(JSON.stringify(countObj));
   
   
@@ -63,15 +71,19 @@ wss.on('connection', (ws) => {
     };
     wss.broadcast(JSON.stringify(newNotif));
       break;
-      default:
-      // show an error in the console if the message type is unknown
-      throw new Error("Unknown event type " + msg.type);
-   }
-
+     default:
+        throw new Error("Unknown event type " + message.type);
+    }
   });
    
- 
-
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
-  ws.on('close', () => console.log('Client disconnected'));
+  ws.on('close', () => {
+  const users = wss.clients.size;
+  const count = {
+    type: 'userCount',
+    userCount: users,
+  }
+  wss.broadcast(JSON.stringify(count));
+  console.log('Client disconnected')
+  });
 });
